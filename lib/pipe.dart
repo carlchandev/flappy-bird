@@ -1,43 +1,66 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/sprite.dart';
+import 'package:flappy_bird/bird.dart';
 import 'package:flappy_bird/game.dart';
-import 'package:flappy_bird/renderable.dart';
 
-class Pipe implements Renderable {
+class Pipe {
+  final int pipeId;
   final FlappyBirdGame game;
-  Sprite _pipeTop = Sprite('pipe_top.png');
-  Sprite _pipeBottom = Sprite('pipe_bottom.png');
-  double x;
-  Rect _pipeTopRect;
-  Rect _pipeBottomRect;
+
+  Sprite _pipeUpper = Sprite('pipe_top.png');
+  Sprite _pipeLower = Sprite('pipe_bottom.png');
+  Rect _pipeUpperRect;
+  Rect _pipeLowerRect;
+
+  double _gapHeight;
+  double _gapTopY;
+
+  final double pipeWidth = 70;
+  final double pipeFullHeight = 500;
+  double _pipeX;
+  double _pipeUpperTopY;
+  double _pipeUpperHeight;
+  double _pipeLowerTopY;
+  double _pipeLowerHeight;
+
   bool isOutOfSight = false;
 
-  Pipe(this.game) {
-    x = game.screenSize.width;
+  Pipe(this.pipeId, this.game) {
+    _pipeX = game.screenSize.width;
+    _gapHeight = 180;
+    _gapTopY = randomIntInRange(150, 350);
+    _pipeUpperTopY = _gapTopY - pipeFullHeight;
+    _pipeUpperHeight = pipeFullHeight;
+    _pipeLowerTopY = _gapTopY + _gapHeight;
+    _pipeLowerHeight = pipeFullHeight;
   }
 
-  @override
+  double randomIntInRange(int min, int max) {
+    return (min + Random().nextInt(max - min)).toDouble();
+  }
+
   void render(Canvas c) {
-    _pipeTopRect = Rect.fromLTWH(x, 0, game.tileSize, game.tileSize * 2);
-    _pipeBottomRect = Rect.fromLTWH(
-        x,
-        game.screenSize.height - game.tileSize * 4,
-        game.tileSize,
-        game.tileSize * 2);
-    _pipeTop.renderRect(c, _pipeTopRect);
-    _pipeBottom.renderRect(c, _pipeBottomRect);
+    _pipeUpperRect =
+        Rect.fromLTWH(_pipeX, _pipeUpperTopY, pipeWidth, _pipeUpperHeight);
+    _pipeLowerRect =
+        Rect.fromLTWH(_pipeX, _pipeLowerTopY, pipeWidth, _pipeLowerHeight);
+    _pipeUpper.renderRect(c, _pipeUpperRect);
+    _pipeLower.renderRect(c, _pipeLowerRect);
   }
 
-  @override
   void resize(Size s) {}
 
-  @override
-  void update(double t) {
-    if (x < -50) {
+  void update(double t) {}
+
+  void move() {
+    if (_pipeX < -50) {
       isOutOfSight = true;
     } else {
-      x -= game.tileSize;
+      _pipeX -= 3;
     }
   }
+
+  bool isPassed() => _pipeX < game.centerX - (Bird.width / 2);
 }
