@@ -6,17 +6,13 @@ import 'package:flutter/material.dart';
 
 import 'game_text.dart';
 
-class Score {
+class StartGame {
   final FlappyBirdGame _game;
-  int _score;
 
-  Score(this._game, this._score);
+  StartGame(this._game);
 
   void render(Canvas c) {
-    GameText.large.render(c, '$_score', Position(_game.centerX - 13, 50));
-  }
-
-  void updateScore(int newScore) {
-    _score = newScore;
+    GameText.light.render(
+        c, 'Tap to start', Position(_game.centerX - 70, _game.centerY - 30));
   }
 }

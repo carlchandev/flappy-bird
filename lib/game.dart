@@ -8,8 +8,10 @@ import 'package:flappy_bird/bird.dart';
 import 'package:flappy_bird/pipe.dart';
 import 'package:flappy_bird/score.dart';
 import 'package:flappy_bird/sound.dart';
+import 'package:flappy_bird/start_game.dart';
 import 'package:flutter/material.dart';
 
+import 'game_over.dart';
 import 'game_state.dart';
 
 class FlappyBirdGame extends BaseGame {
@@ -34,6 +36,8 @@ class FlappyBirdGame extends BaseGame {
   Timer pipeFactoryTimer;
   Bird _bird;
   Score _score;
+  StartGame _startGame;
+  GameOver _gameOver;
   bool _hasCrashed;
 
   FlappyBirdGame() {
@@ -50,6 +54,8 @@ class FlappyBirdGame extends BaseGame {
     _bg = Background(this);
     _base = Base(this);
     _bird = Bird(this);
+    _startGame = StartGame(this);
+    _gameOver = GameOver(this);
     _score = Score(this, 0);
     _pipeCount = 0;
     _frameCount = 0;
@@ -60,10 +66,9 @@ class FlappyBirdGame extends BaseGame {
   }
 
   void initializeBgm() {
-    if(Flame.bgm.isPlaying)
-      Flame.bgm.dispose();
-    Flame.bgm.initialize();
-    Flame.bgm.play(Sound.bgm);
+    if (!Flame.bgm.isPlaying) {
+      Flame.bgm.play(Sound.bgm);
+    }
   }
 
   void _playGame() {
@@ -74,22 +79,23 @@ class FlappyBirdGame extends BaseGame {
     gameState = GameState.paused;
   }
 
-  void _finishGame() {
-    gameState = GameState.finished;
-  }
-
   @override
   void render(Canvas c) {
     _bg?.render(c);
     _pipes?.forEach((p) => p.render(c));
     _base?.render(c);
+    if (gameState == GameState.start) {
+      _startGame?.render(c);
+    }
+    if (gameState == GameState.finished) {
+      _gameOver?.render(c);
+    }
     _bird?.render(c);
-    _score.render(c);
+    _score?.render(c);
   }
 
   @override
   void resize(Size s) {
-    print("game.resize fired!");
     if (GameState.initializing == gameState) {
       super.resize(s);
       screenSize = s;
@@ -109,8 +115,6 @@ class FlappyBirdGame extends BaseGame {
 
       _initializeGame();
       gameState = GameState.start;
-    } else {
-      // todo resize screen?
     }
   }
 
@@ -136,6 +140,7 @@ class FlappyBirdGame extends BaseGame {
   void gameOver() {
     _hasCrashed = true;
     _bird.die();
+    Flame.bgm.stop();
     gameState = GameState.finished;
   }
 
@@ -186,7 +191,6 @@ class FlappyBirdGame extends BaseGame {
       case GameState.playing:
         {
           _bird.jump();
-//          _pauseGame();
         }
         break;
       case GameState.start:
