@@ -7,6 +7,7 @@ import 'package:flappy_bird/base.dart';
 import 'package:flappy_bird/bird.dart';
 import 'package:flappy_bird/pipe.dart';
 import 'package:flappy_bird/score.dart';
+import 'package:flappy_bird/sound.dart';
 import 'package:flutter/material.dart';
 
 import 'game_state.dart';
@@ -33,9 +34,19 @@ class FlappyBirdGame extends BaseGame {
   Timer pipeFactoryTimer;
   Bird _bird;
   Score _score;
+  bool _hasCrashed;
+
+  FlappyBirdGame() {
+    Flame.audio.loadAll([
+      Sound.bgm,
+      Sound.jump,
+      Sound.die,
+    ]);
+  }
 
   void _initializeGame() {
     print('fired _initializeGame');
+    initializeBgm();
     _bg = Background(this);
     _base = Base(this);
     _bird = Bird(this);
@@ -43,8 +54,16 @@ class FlappyBirdGame extends BaseGame {
     _pipeCount = 0;
     _frameCount = 0;
     _pipes = [];
-    _lastPipeInterval = 0;
+    _lastPipeInterval = 1400;
     _passedPipeIds = new Set();
+    _hasCrashed = false;
+  }
+
+  void initializeBgm() {
+    if(Flame.bgm.isPlaying)
+      Flame.bgm.dispose();
+    Flame.bgm.initialize();
+    Flame.bgm.play(Sound.bgm);
   }
 
   void _playGame() {
@@ -98,13 +117,26 @@ class FlappyBirdGame extends BaseGame {
   @override
   void update(double t) {
     if (GameState.playing == gameState) {
-      _updateScore();
-      _updatePipes(t);
+      if (_isCrashing()) {
+        gameOver();
+      } else {
+        _updateScore();
+        _updatePipes(t);
+      }
+      _updateBirds(t);
+      _tickFrameCount();
+    } else if (GameState.finished == gameState) {
       _updateBirds(t);
       _tickFrameCount();
     } else {
       return;
     }
+  }
+
+  void gameOver() {
+    _hasCrashed = true;
+    _bird.die();
+    gameState = GameState.finished;
   }
 
   void _updateScore() {
@@ -120,11 +152,20 @@ class FlappyBirdGame extends BaseGame {
   }
 
   void _updateBirds(double t) {
-    if (_frameCount % 5 == 0) {
+    if (!_bird.isDead() && _frameCount % 5 == 0) {
       _bird.flap();
     }
     _bird.move(t);
-    _bird?.update(t);
+    _bird.update(t);
+  }
+
+  bool _isCrashing() {
+    if (_bird.isDead() || _hasCrashed) return false;
+    if (_bird.y < 0 || _bird.y > (height - Bird.height)) {
+      return true;
+    }
+    // todo: check collision
+    return false;
   }
 
   void _updatePipes(double t) {
@@ -152,6 +193,12 @@ class FlappyBirdGame extends BaseGame {
       case GameState.paused:
         {
           _playGame();
+        }
+        break;
+      case GameState.finished:
+        {
+          _initializeGame();
+          gameState = GameState.start;
         }
         break;
       default:

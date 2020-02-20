@@ -12,7 +12,5 @@ void main() async {
   await flameUtil.setOrientation(DeviceOrientation.portraitUp);
   FlappyBirdGame game = FlappyBirdGame();
   runApp(game.widget);
-  // should move to somewhere else?
-  Flame.bgm.initialize();
-  Flame.bgm.play('bgm.mp3');
+  Flame.audio.disableLog();
 }

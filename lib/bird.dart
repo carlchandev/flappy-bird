@@ -2,9 +2,11 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/animation.dart' as fa;
+import 'package:flame/flame.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 import 'package:flappy_bird/game.dart';
+import 'package:flappy_bird/sound.dart';
 
 class Bird {
   static final double _spriteWidth = 34;
@@ -24,10 +26,12 @@ class Bird {
   final FlappyBirdGame game;
   double x;
   double y;
-  double velocity = -2.5;
-  double gravityAcceleration = 0.4;
+  double velocity = -2.3;
+  double gravityAcceleration = 0.35;
   double timeCount = 0;
   double displacement;
+
+  bool _isDead = false;
 
   Bird(this.game) {
     x = game.centerX;
@@ -43,9 +47,6 @@ class Bird {
   void update(double t) {
     if (y < game.height - height) {
       y += displacement;
-    } else {
-      // god mode
-      y -= 900;
     }
   }
 
@@ -54,14 +55,27 @@ class Bird {
   }
 
   void move(double t) {
+    if (_isDead) {
+      timeCount = timeCount < 10? 10: timeCount;
+    }
     displacement = (velocity * timeCount) +
         (0.5 * gravityAcceleration * pow(timeCount, 2));
-    if (timeCount < 15) {
-      timeCount++;
+    if (timeCount < 19) {
+      timeCount += 0.6;
     }
   }
 
   void jump() {
-    timeCount = 0;
+    if (!_isDead) {
+      Flame.audio.play(Sound.jump, volume: 0.2);
+      timeCount = 0;
+    }
   }
+
+  void die() {
+    Flame.audio.play(Sound.die);
+    _isDead = true;
+  }
+
+  bool isDead() => _isDead;
 }

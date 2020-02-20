@@ -19,6 +19,10 @@ class Pipe {
 
   final double pipeWidth = 70;
   final double pipeFullHeight = 500;
+  final int gapMinHeight = 180;
+  final int gapMaxHeight = 240;
+  final int gapMinTopY = 150;
+  final int gapMaxTopY = 350;
   double _pipeX;
   double _pipeUpperTopY;
   double _pipeUpperHeight;
@@ -29,8 +33,8 @@ class Pipe {
 
   Pipe(this.pipeId, this.game) {
     _pipeX = game.screenSize.width;
-    _gapHeight = 180;
-    _gapTopY = randomIntInRange(150, 350);
+    _gapHeight = randomIntInRange(gapMinHeight, gapMaxHeight);
+    _gapTopY = randomIntInRange(gapMinTopY, gapMaxTopY);
     _pipeUpperTopY = _gapTopY - pipeFullHeight;
     _pipeUpperHeight = pipeFullHeight;
     _pipeLowerTopY = _gapTopY + _gapHeight;
