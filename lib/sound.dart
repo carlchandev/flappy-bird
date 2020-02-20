@@ -1,0 +1,5 @@
+class Sound {
+  static const String bgm = "bgm.mp3";
+  static const String jump = "jump.mp3";
+  static const String die = "die.mp3";
+}
