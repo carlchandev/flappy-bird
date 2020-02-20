@@ -34,14 +34,14 @@ class Bird {
   bool _isDead = false;
 
   Bird(this.game) {
-    x = game.centerX;
-    y = game.centerY;
+    x = game.centerX - (width / 2);
+    y = game.centerY - (height / 2);
   }
 
   void render(Canvas c) {
-    _birdAnimation.getSprite().renderPosition(
-        c, Position(x - (width / 2), y + (height / 2)),
-        size: Position(width, height));
+    _birdAnimation
+        .getSprite()
+        .renderPosition(c, Position(x, y), size: Position(width, height));
   }
 
   void update(double t) {
@@ -56,7 +56,7 @@ class Bird {
 
   void move(double t) {
     if (_isDead) {
-      timeCount = timeCount < 10? 10: timeCount;
+      timeCount = timeCount < 10 ? 10 : timeCount;
     }
     displacement = (velocity * timeCount) +
         (0.5 * gravityAcceleration * pow(timeCount, 2));

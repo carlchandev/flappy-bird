@@ -13,6 +13,6 @@ class StartGame {
 
   void render(Canvas c) {
     GameText.light.render(
-        c, 'Tap to start', Position(_game.centerX - 70, _game.centerY - 30));
+        c, 'Tap to start', Position(_game.centerX - 70, _game.centerY - 60));
   }
 }

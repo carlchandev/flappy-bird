@@ -45,8 +45,12 @@ class FlappyBirdGame extends BaseGame {
       Sound.bgm,
       Sound.jump,
       Sound.die,
+      Sound.crash,
     ]);
   }
+
+  @override
+  bool debugMode() => true;
 
   void _initializeGame() {
     print('fired _initializeGame');
@@ -67,7 +71,7 @@ class FlappyBirdGame extends BaseGame {
 
   void initializeBgm() {
     if (!Flame.bgm.isPlaying) {
-      Flame.bgm.play(Sound.bgm);
+      Flame.bgm.play(Sound.bgm, volume: 0.5);
     }
   }
 
@@ -121,7 +125,7 @@ class FlappyBirdGame extends BaseGame {
   @override
   void update(double t) {
     if (GameState.playing == gameState) {
-      if (_isCrashing()) {
+      if (!_hasCrashed && _isCrashing()) {
         gameOver();
       } else {
         _updateScore();
@@ -139,6 +143,7 @@ class FlappyBirdGame extends BaseGame {
 
   void gameOver() {
     _hasCrashed = true;
+    Flame.audio.play(Sound.crash);
     _bird.die();
     Flame.bgm.stop();
     gameState = GameState.finished;
@@ -169,7 +174,27 @@ class FlappyBirdGame extends BaseGame {
     if (_bird.y < 0 || _bird.y > (height - Bird.height)) {
       return true;
     }
-    // todo: check collision
+    final _comingPipes = _pipes.where((p) => !p.isPassed());
+    print('bird ${_bird.x}, ${_bird.y}');
+    for (Pipe p in _comingPipes) {
+      print('=================');
+      print('bird ${_bird.x}, ${_bird.y}');
+      print('upperLTWH ${p.upperLTWH["x"]}, ${p.upperLTWH["height"]}');
+      print('lowerLTWH ${p.lowerLTWH["x"]}, ${height - p.lowerLTWH["height"]}');
+      print('=================');
+      if (_bird.x + (Bird.height / 2) >=
+              (p.upperLTWH['x'] - (Bird.height / 2)) &&
+          _bird.x - (Bird.height / 2) <=
+              p.upperLTWH['x'] + p.pipeWidth + (Bird.height / 2)) {
+        print('touch Pipe horizontally');
+        if ((_bird.y - (Bird.height / 2)) <= p.upperLTWH['height'] ||
+            (_bird.y + (Bird.height / 2)) >=
+                (height - p.lowerLTWH['height'] - (Bird.height / 2))) {
+          print('touch Pipe vertically');
+          return true;
+        }
+      }
+    }
     return false;
   }
 

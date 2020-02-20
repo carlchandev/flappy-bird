@@ -28,7 +28,6 @@ class Pipe {
   double _pipeUpperHeight;
   double _pipeLowerTopY;
   double _pipeLowerHeight;
-
   bool isOutOfSight = false;
 
   Pipe(this.pipeId, this.game) {
@@ -40,6 +39,16 @@ class Pipe {
     _pipeLowerTopY = _gapTopY + _gapHeight;
     _pipeLowerHeight = pipeFullHeight;
   }
+
+  Map get upperLTWH => {
+        "x": _pipeX,
+        "height": _gapTopY,
+      };
+
+  Map get lowerLTWH => {
+        "x": _pipeX,
+        "height": game.height - _gapTopY - _gapHeight,
+      };
 
   double randomIntInRange(int min, int max) {
     return (min + Random().nextInt(max - min)).toDouble();
@@ -66,5 +75,5 @@ class Pipe {
     }
   }
 
-  bool isPassed() => _pipeX < game.centerX - (Bird.width / 2);
+  bool isPassed() => _pipeX < game.centerX - Bird.width;
 }

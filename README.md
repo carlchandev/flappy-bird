@@ -11,3 +11,5 @@ die
 https://freesound.org/people/harrietniamh/sounds/415079/
 bgm
 https://freesound.org/people/DominikBraun/sounds/483502/
+crash
+https://freesound.org/people/Soundscape_Leuphana/sounds/207508/
