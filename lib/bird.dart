@@ -67,7 +67,7 @@ class Bird {
 
   void jump() {
     if (!_isDead) {
-      Flame.audio.play(Sound.jump, volume: 0.2);
+      Flame.audio.play(Sound.jump, volume: 0.5);
       timeCount = 0;
     }
   }

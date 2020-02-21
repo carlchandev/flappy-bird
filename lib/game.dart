@@ -176,6 +176,7 @@ class FlappyBirdGame extends BaseGame {
     }
     final _comingPipes = _pipes.where((p) => !p.isPassed());
     print('bird ${_bird.x}, ${_bird.y}');
+    // todo add crash box to debug
     for (Pipe p in _comingPipes) {
       print('=================');
       print('bird ${_bird.x}, ${_bird.y}');
@@ -184,8 +185,8 @@ class FlappyBirdGame extends BaseGame {
       print('=================');
       if (_bird.x + (Bird.height / 2) >=
               (p.upperLTWH['x'] - (Bird.height / 2)) &&
-          _bird.x - (Bird.height / 2) <=
-              p.upperLTWH['x'] + p.pipeWidth + (Bird.height / 2)) {
+          _bird.x + (Bird.height / 2) <=
+              p.upperLTWH['x'] + p.pipeWidth) {
         print('touch Pipe horizontally');
         if ((_bird.y - (Bird.height / 2)) <= p.upperLTWH['height'] ||
             (_bird.y + (Bird.height / 2)) >=
