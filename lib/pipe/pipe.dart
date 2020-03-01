@@ -58,7 +58,7 @@ class Pipe {
     }
   }
 
-  bool isPassed(Bird bird) => (x + pipeWidth) < bird.x;
+  bool isPassed(BirdComponent bird) => (x + pipeWidth) < bird.x;
 
   void destroy() {
     pipeTop.remove();

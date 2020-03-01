@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flappy_bird/background/background.dart';
-import 'package:flappy_bird/background/base.dart';
-import 'package:flappy_bird/bird/bird.dart';
 import 'package:flappy_bird/config/sound.dart';
+import 'package:flappy_bird/game_world.dart';
 import 'package:flappy_bird/pipe/pipe.dart';
 import 'package:flappy_bird/text/game_over.dart';
 import 'package:flappy_bird/text/score.dart';
@@ -15,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'game_state.dart';
 
 class FlappyBirdGame extends BaseGame {
+  final GameWorld world = GameWorld();
+
   static final double groundHeight = 130;
 
   GameState gameState = GameState.initializing;
@@ -26,14 +27,12 @@ class FlappyBirdGame extends BaseGame {
   double skyTop = 0;
 
   Background _bg = Background();
-  Base _base = Base();
   final int _pipeIntervalInMs = 1800;
   int _pipeCount;
   List<Pipe> _pipes = [];
   Set<int> _passedPipeIds = new Set();
   double _lastPipeInterval;
   Timer pipeFactoryTimer;
-  Bird _bird;
   Score _score = Score();
   StartGame _startGame = StartGame();
   GameOver _gameOver = GameOver();
@@ -45,6 +44,7 @@ class FlappyBirdGame extends BaseGame {
   }
 
   FlappyBirdGame() {
+    world.initializeWorld();
     Flame.audio.loadAll([
       Sound.bgm,
       Sound.jump,
@@ -52,15 +52,15 @@ class FlappyBirdGame extends BaseGame {
       Sound.crash,
     ]);
     add(_bg);
-    add(_base);
-    add(_score);
-    add(_startGame);
-    add(_gameOver);
+//    add(_score);
+//    add(_startGame);
+//    add(_gameOver);
   }
 
   @override
   void resize(Size s) {
     super.resize(s);
+    world.resize(s);
     if (GameState.initializing == gameState) {
       screenSize = s;
       width = s.width;
@@ -68,11 +68,11 @@ class FlappyBirdGame extends BaseGame {
       centerX = s.width / 2;
       centerY = (s.height - groundHeight) / 2;
 
-      print('screenSize: ${s.width} x ${s.height}');
-      print('center: ($centerX, $centerY)');
-      print('game width, height: ($width, $height)');
-      print('skyTop: $skyTop');
-      print('groundHeight: $groundHeight');
+      print('game: screenSize: ${s.width} x ${s.height}');
+      print('game: center: ($centerX, $centerY)');
+      print('game: width, height: ($width, $height)');
+      print('game: skyTop: $skyTop');
+      print('game: groundHeight: $groundHeight');
 
       _gotoStartGame();
     }
@@ -82,16 +82,9 @@ class FlappyBirdGame extends BaseGame {
     print('fired _initializeGame');
 //    _initializeBgm();
     _score.updateScore(0);
-    _initializeBird();
     _initializePipes();
 
     _hasCrashed = false;
-  }
-
-  void _initializeBird() {
-    _bird?.remove();
-    _bird = Bird(this);
-    add(_bird);
   }
 
   void _initializePipes() {
@@ -109,53 +102,60 @@ class FlappyBirdGame extends BaseGame {
   }
 
   @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+    world.render(canvas);
+  }
+
+  @override
   void update(double t) {
     super.update(t);
+    world.update(t);
     if (GameState.playing == gameState) {
       _updatePipes(t);
-      if (!_hasCrashed && _isCrashing()) {
-        _gotoGameOver();
-      } else {
-        _updateScore();
-      }
+//      if (!_hasCrashed && _isCrashing()) {
+//        _gotoGameOver();
+//      } else {
+//        _updateScore();
+//      }
     }
   }
 
-  void _updateScore() {
-    _pipes
-        .where((p) => p.isPassed(_bird))
-        .forEach((p) => _passedPipeIds.add(p.pipeId));
-    _score.updateScore(_passedPipeIds.length);
-  }
+//  void _updateScore() {
+//    _pipes
+//        .where((p) => p.isPassed(_bird))
+//        .forEach((p) => _passedPipeIds.add(p.pipeId));
+//    _score.updateScore(_passedPipeIds.length);
+//  }
 
-  bool _isCrashing() {
-    if (_bird.isDead || _hasCrashed) return false;
-    if (_bird.y < 0 || _bird.y > (height - _bird.height)) {
-      return true;
-    }
-    final _comingPipes = _pipes.where((p) => !p.isPassed(_bird));
-    print('bird ${_bird.x}, ${_bird.y}');
-    // todo add crash box to debug
-    for (Pipe p in _comingPipes) {
-      print('=================');
-      print('bird ${_bird.x}, ${_bird.y}');
-      print('upperLTWH ${p.upperLTWH["x"]}, ${p.upperLTWH["height"]}');
-      print('lowerLTWH ${p.lowerLTWH["x"]}, ${height - p.lowerLTWH["height"]}');
-      print('=================');
-      if (_bird.x + (_bird.height / 2) >=
-              (p.upperLTWH['x'] - (_bird.height / 2)) &&
-          _bird.x + (_bird.height / 2) <= p.upperLTWH['x'] + Pipe.pipeWidth) {
-        print('touch Pipe horizontally');
-        if ((_bird.y - (_bird.height / 2)) <= p.upperLTWH['height'] ||
-            (_bird.y + (_bird.height / 2)) >=
-                (height - p.lowerLTWH['height'] - (_bird.height / 2))) {
-          print('touch Pipe vertically');
-          return true;
-        }
-      }
-    }
-    return false;
-  }
+//  bool _isCrashing() {
+//    if (_bird.isDead || _hasCrashed) return false;
+//    if (_bird.y < 0 || _bird.y > (height - _bird.height)) {
+//      return true;
+//    }
+//    final _comingPipes = _pipes.where((p) => !p.isPassed(_bird));
+//    print('bird ${_bird.x}, ${_bird.y}');
+//    // todo add crash box to debug
+//    for (Pipe p in _comingPipes) {
+//      print('=================');
+//      print('bird ${_bird.x}, ${_bird.y}');
+//      print('upperLTWH ${p.upperLTWH["x"]}, ${p.upperLTWH["height"]}');
+//      print('lowerLTWH ${p.lowerLTWH["x"]}, ${height - p.lowerLTWH["height"]}');
+//      print('=================');
+//      if (_bird.x + (_bird.height / 2) >=
+//              (p.upperLTWH['x'] - (_bird.height / 2)) &&
+//          _bird.x + (_bird.height / 2) <= p.upperLTWH['x'] + Pipe.pipeWidth) {
+//        print('touch Pipe horizontally');
+//        if ((_bird.y - (_bird.height / 2)) <= p.upperLTWH['height'] ||
+//            (_bird.y + (_bird.height / 2)) >=
+//                (height - p.lowerLTWH['height'] - (_bird.height / 2))) {
+//          print('touch Pipe vertically');
+//          return true;
+//        }
+//      }
+//    }
+//    return false;
+//  }
 
   void _updatePipes(double t) {
     if (_lastPipeInterval > _pipeIntervalInMs) {
@@ -175,10 +175,11 @@ class FlappyBirdGame extends BaseGame {
 
   @override
   void onTapDown(TapDownDetails details) {
+    world.onTapDown(details);
     switch (gameState) {
       case GameState.playing:
         {
-          _bird.jump();
+//          _bird.jump();
         }
         break;
       case GameState.start:
@@ -219,7 +220,7 @@ class FlappyBirdGame extends BaseGame {
     _hasCrashed = true;
     _gameOver.setVisible(true);
     Flame.audio.play(Sound.crash);
-    _bird.die();
+//    _bird.die();
     Flame.bgm.stop();
     gameState = GameState.finished;
   }
