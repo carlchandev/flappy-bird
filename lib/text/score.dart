@@ -17,4 +17,7 @@ class Score extends TextComponent {
     text = newScore.toString();
     // todo: play a sound
   }
+
+  @override
+  int priority() => 30;
 }

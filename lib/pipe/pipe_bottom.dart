@@ -29,4 +29,7 @@ class PipeBottom extends SpriteComponent {
   bool destroy() => isDestroy;
 
   void remove() => isDestroy = true;
+
+  @override
+  int priority() => 25;
 }

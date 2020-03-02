@@ -26,4 +26,7 @@ class StartGame extends TextComponent {
   void setVisible(bool isVisible) {
     this.isVisible = isVisible;
   }
+
+  @override
+  int priority() => 30;
 }

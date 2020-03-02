@@ -8,7 +8,7 @@ import 'package:flappy_bird/config/game_text.dart';
 class GameOver extends TextComponent {
   bool isVisible = false;
 
-  GameOver() : super('Game Over\nTap to retry', config: GameText.light);
+  GameOver() : super('Game Over\nTap to retry', config: GameText.regular);
 
   @override
   void resize(Size s) {
@@ -26,4 +26,7 @@ class GameOver extends TextComponent {
   void setVisible(bool isVisible) {
     this.isVisible = isVisible;
   }
+
+  @override
+  int priority() => 30;
 }

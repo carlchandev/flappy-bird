@@ -14,4 +14,7 @@ class Base extends SpriteComponent {
     width = s.width;
     height = FlappyBirdGame.groundHeight;
   }
+
+  @override
+  int priority() => 20;
 }
