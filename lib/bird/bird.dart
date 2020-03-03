@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flame/animation.dart' as fa;
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/flame.dart';
+import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 import 'package:flappy_bird/config/sound.dart';
 import 'package:flappy_bird/game.dart';
@@ -24,8 +25,13 @@ class Bird extends AnimationComponent {
   List<double> flyAngles = [-pi / 10, -pi / 8, -pi / 6];
   int flyAnimationIndex = 0;
 
+  Paint paint = Paint();
+
   Bird(this._game)
-      : super(51, 36, fa.Animation.spriteList(sprites, stepTime: 0.08));
+      : super(51, 36, fa.Animation.spriteList(sprites, stepTime: 0.08)) {
+    paint.color = debugColor;
+    paint.style = PaintingStyle.stroke;
+  }
 
   @override
   void resize(Size s) {
@@ -40,18 +46,13 @@ class Bird extends AnimationComponent {
       _move();
     }
     if (!isDead) {
-//      if (y > 0) {
-//        angle = flyAngles[flyAnimationIndex++];
-//        if (flyAnimationIndex > flyAngles.length) {
-//          flyAnimationIndex = 0;
-//        }
-//      }
       super.update(t);
     }
   }
 
   void _move() {
     if (isDead) {
+      return; // debug
       timeCount = timeCount < 10 ? 10 : timeCount;
     }
     displacement = (velocity * timeCount) +
@@ -60,11 +61,17 @@ class Bird extends AnimationComponent {
       timeCount += 0.6;
     }
     if (y < _game.height - height) {
-      if (isDead && angle <= pi / 3) {
-        angle += pi / 10;
+      if (isDead) {
+        angle = pi / 2;
       }
       y += displacement;
     }
+//    if (displacement < 0) {
+//      angle = flyAngles[flyAnimationIndex++];
+//      if (flyAnimationIndex > flyAngles.length) {
+//        flyAnimationIndex = 0;
+//      }
+//    }
   }
 
   void jump() {
@@ -78,6 +85,7 @@ class Bird extends AnimationComponent {
   void die() {
     Flame.audio.play(Sound.die);
     isDead = true;
+//    x += width;
   }
 
   @override
@@ -87,4 +95,23 @@ class Bird extends AnimationComponent {
 
   @override
   int priority() => 28;
+
+  @override
+  void renderDebugMode(Canvas canvas) {
+    // draw bird circle
+    canvas.drawCircle(Offset(width / 2, height / 2), width / 2, paint);
+    final dx = x + width / 2;
+    final dy = y + height / 2;
+    final radius = width / 2;
+    debugTextConfig.render(
+        canvas,
+        "(${dx.toStringAsFixed(2)}, ${dy.toStringAsFixed(2)}) r:${radius.toStringAsFixed(2)}",
+        Position(width - 50, height));
+    // draw center
+    canvas.drawPoints(PointMode.points, [Offset(width / 2, height / 2)], paint);
+    debugTextConfig.render(
+        canvas,
+        "(${dx.toStringAsFixed(2)}, ${dy.toStringAsFixed(2)})",
+        Position(-width / 2, height / 2 - 40));
+  }
 }

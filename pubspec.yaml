@@ -52,6 +52,7 @@ flutter:
     - assets/images/bird2.png
     - assets/images/pipe-top.png
     - assets/images/pipe-bottom.png
+    - assets/images/play-btn.png
     - assets/audio/bgm.mp3
     - assets/audio/jump.mp3
     - assets/audio/die.mp3

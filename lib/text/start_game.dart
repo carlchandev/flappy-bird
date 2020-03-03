@@ -8,12 +8,12 @@ import 'package:flappy_bird/config/game_text.dart';
 class StartGame extends TextComponent {
   bool isVisible = true;
 
-  StartGame() : super('Tap to start', config: GameText.light);
+  StartGame() : super('Flappy Bird', config: GameText.large);
 
   @override
   void resize(Size s) {
-    x = s.width / 2 - 70;
-    y = s.height / 2 - 100;
+    x = s.width / 2 - width/2;
+    y = s.height / 2 - 250;
   }
 
   @override
