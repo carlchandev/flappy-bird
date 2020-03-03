@@ -13,5 +13,5 @@ A Flappy bird game implemented by `Flutter` with `Flame` game engine.
 - Coin https://freesound.org/people/n_audioman/sounds/273570/
 
 ## Screenshots
-![screeshot1](screenshots/screeshot1.png)
-![screeshot2](screenshots/screeshot2.png)
+![screenshot1](screenshots/screenshot1.png)
+![screenshot2](screenshots/screenshot2.png)
