@@ -2,8 +2,8 @@
 A Flappy bird game implemented by `Flutter` with `Flame` game engine.
 
 ## Screenshots
-![screeshot1](screenshots/screeshot1.png =250x)
-![screeshot2](screenshots/screeshot2.png =250x)
+![screeshot1](screenshots/screeshot1.png){width=200px}
+![screeshot2](screenshots/screeshot2.png){width=200px}
 
 ## Run
 `flutter run`
