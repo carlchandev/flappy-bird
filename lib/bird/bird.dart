@@ -24,7 +24,7 @@ class Bird extends AnimationComponent {
   double _timeCount = 0;
   double _displacement;
   bool _isDestroy = false;
-  double _initialJumpSpeed = 2;
+  double _initialJumpSpeed = 3.5;
   double _initialDropSpeed = 5;
   double _maxDropSpeed = 17;
   double _dropAcceleration = 0.55;
@@ -102,9 +102,7 @@ class Bird extends AnimationComponent {
 
   @override
   void renderDebugMode(Canvas canvas) {
-    // draw bird circle
     canvas.drawCircle(Offset(width / 2, height / 2), radius, paint);
-    // draw center
     canvas.drawPoints(PointMode.points, [Offset(x, y)], paint);
     debugTextConfig.render(
         canvas,
