@@ -8,19 +8,24 @@ import 'package:flappy_bird/bird/bird.dart';
 import 'package:flappy_bird/collision_detector.dart';
 import 'package:flappy_bird/config/sound.dart';
 import 'package:flappy_bird/pipe/pipe.dart';
+import 'package:flappy_bird/text/final_score.dart';
 import 'package:flappy_bird/text/game_over.dart';
 import 'package:flappy_bird/text/score.dart';
 import 'package:flappy_bird/text/start_game.dart';
+import 'package:flappy_bird/text/top_score.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 import 'button/play_button.dart';
 import 'button/retry_button.dart';
+import 'config/store.dart';
 import 'game_state.dart';
 
 class GameController extends BaseGame {
   static final double groundHeight = 130;
 
   GameState gameState = GameState.initializing;
+  Box userBox;
   Size screenSize;
   double width;
   double height;
@@ -38,6 +43,10 @@ class GameController extends BaseGame {
   Timer pipeFactoryTimer;
   Bird _bird;
   Score _score = Score(0);
+  int _topScore;
+  FinalScore finalScoreText;
+  TopScore topScoreText;
+
   StartGame _startGame = StartGame();
   PlayButton _playButton;
   GameOver _gameOver = GameOver();
@@ -50,6 +59,7 @@ class GameController extends BaseGame {
   }
 
   GameController() {
+    initUserBox().then((b) => userBox = b);
     Flame.audio.loadAll([
       Sound.bgm,
       Sound.jump,
@@ -62,7 +72,15 @@ class GameController extends BaseGame {
     add(_score);
     add(_startGame);
     add(_gameOver);
+    _getLastTopScore().then((s) => _topScore = s);
   }
+
+  Future<Box> initUserBox() async {
+    await Hive.openBox(Store.userBox);
+  }
+
+  Future<int> _getLastTopScore() async => Hive.openBox(Store.userBox)
+      .then((b) => b.get(Store.topScore, defaultValue: 0));
 
   @override
   void resize(Size s) {
@@ -95,7 +113,7 @@ class GameController extends BaseGame {
   void _initializeRetryButton() {
     _destroyRetryButton();
     _retryButton = RetryButton(() => _gotoStartGame());
-    Future.delayed(Duration(seconds: 1), () => add(_retryButton));
+    add(_retryButton);
   }
 
   void _initializeBird() {
@@ -185,11 +203,17 @@ class GameController extends BaseGame {
   void _gotoStartGame() {
     _startGame.setVisible(true);
     _gameOver.hide();
-    _score.setVisible(false);
+    _hideScores();
     _destroyRetryButton();
     _initializePlayButton();
     _initializeGame();
     gameState = GameState.start;
+  }
+
+  void _hideScores() {
+    _score.setVisible(false);
+    finalScoreText?.remove();
+    topScoreText?.remove();
   }
 
   void _destroyRetryButton() {
@@ -204,12 +228,31 @@ class GameController extends BaseGame {
   }
 
   void _gotoGameOver() {
-    _hasCrashed = true;
-    _gameOver.show();
-    _initializeRetryButton();
     Flame.audio.play(Sound.crash, volume: 0.5);
     _bird.die();
     Flame.bgm.stop();
+    _updateTopScore();
+    _hasCrashed = true;
+    _gameOver.show();
+    _initializeRetryButton();
     gameState = GameState.finished;
+  }
+
+  void _updateTopScore() {
+    _getLastTopScore().then((lastTopScore) {
+      if (_score.score > lastTopScore) {
+        _topScore = lastTopScore;
+        Hive.openBox(Store.userBox)
+            .then((b) => b.put(Store.topScore, _score.score));
+      }
+      _showScoreBoard();
+    });
+  }
+
+  void _showScoreBoard() {
+    finalScoreText = FinalScore(_score.score);
+    topScoreText = TopScore(_topScore);
+    add(finalScoreText);
+    add(topScoreText);
   }
 }
