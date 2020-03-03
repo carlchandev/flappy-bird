@@ -6,12 +6,13 @@ import 'package:flappy_bird/pipe/pipe.dart';
 
 class PipeTop extends SpriteComponent {
   final double gapTopY;
-  double x;
   bool isDestroy = false;
 
-  PipeTop(this.x, this.gapTopY)
+  PipeTop(x, this.gapTopY)
       : super.fromSprite(
-            Pipe.pipeWidth, Pipe.pipeHeight, Sprite('pipe-top.png'));
+            Pipe.pipeWidth, Pipe.pipeHeight, Sprite('pipe-top.png')) {
+    this.x = x;
+  }
 
   @override
   void resize(Size s) {

@@ -5,6 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flappy_bird/background/background.dart';
 import 'package:flappy_bird/background/base.dart';
 import 'package:flappy_bird/bird/bird.dart';
+import 'package:flappy_bird/collision_detector.dart';
 import 'package:flappy_bird/config/sound.dart';
 import 'package:flappy_bird/pipe/pipe.dart';
 import 'package:flappy_bird/text/game_over.dart';
@@ -83,7 +84,7 @@ class FlappyBirdGame extends BaseGame {
   }
 
   void _initializeGame() {
-    //    _initializeBgm();
+    _initializeBgm();
     _initializeBird();
     _initializePipes();
     _initializePlayButton();
@@ -92,9 +93,7 @@ class FlappyBirdGame extends BaseGame {
   }
 
   void _initializePlayButton() {
-    if (_playButton != null) {
-      _playButton.remove();
-    }
+    _playButton?.remove();
     _playButton = PlayButton(() => _gotoPlayGame());
     add(_playButton);
   }
@@ -147,28 +146,13 @@ class FlappyBirdGame extends BaseGame {
 
   bool _isCrashing() {
     if (_bird.isDead || _hasCrashed) return false;
-    if (_bird.y < 0 || _bird.y > (height - _bird.height * 1.3)) {
+    if (_bird.y < 0 || _bird.y > (height - _bird.height / 2)) {
       return true;
     }
     final _comingPipes = _pipes.where((p) => !p.isPassed(_bird));
-    print('bird ${_bird.x}, ${_bird.y}');
-    // todo add crash box to debug
     for (Pipe p in _comingPipes) {
-      print('=================');
-      print('bird ${_bird.x}, ${_bird.y}');
-      print('upperLTWH ${p.upperLTWH["x"]}, ${p.upperLTWH["height"]}');
-      print('lowerLTWH ${p.lowerLTWH["x"]}, ${height - p.lowerLTWH["height"]}');
-      print('=================');
-      if (_bird.x + (_bird.height / 2) >=
-              (p.upperLTWH['x'] - (_bird.height / 2)) &&
-          _bird.x + (_bird.height / 2) <= p.upperLTWH['x'] + Pipe.pipeWidth) {
-        print('touch Pipe horizontally');
-        if ((_bird.y - (_bird.height / 2)) <= p.upperLTWH['height'] ||
-            (_bird.y + (_bird.height / 2)) >=
-                (height - p.lowerLTWH['height'] - (_bird.height / 2))) {
-          print('touch Pipe vertically');
-          return true;
-        }
+      if (CollisionDetector.hasBirdCollided(_bird, p)) {
+        return true;
       }
     }
     return false;
@@ -214,9 +198,7 @@ class FlappyBirdGame extends BaseGame {
   }
 
   void _destroyRetryButton() {
-    if (_retryButton != null) {
-      _retryButton.remove();
-    }
+    _retryButton?.remove();
   }
 
   void _gotoPlayGame() {

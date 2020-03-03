@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flame/anchor.dart';
 import 'package:flame/animation.dart' as fa;
 import 'package:flame/components/animation_component.dart';
 import 'package:flame/flame.dart';
@@ -16,6 +17,7 @@ class Bird extends AnimationComponent {
       [0, 1, 2, 1].map((i) => Sprite('bird$i.png')).toList();
   final FlappyBirdGame _game;
 
+  double radius;
   double velocity = -2.3;
   double gravityAcceleration = 0.35;
   double timeCount = 0;
@@ -29,15 +31,16 @@ class Bird extends AnimationComponent {
 
   Bird(this._game)
       : super(51, 36, fa.Animation.spriteList(sprites, stepTime: 0.08)) {
+    anchor = Anchor.center;
     paint.color = debugColor;
     paint.style = PaintingStyle.stroke;
   }
 
   @override
   void resize(Size s) {
-    x = s.width / 2 - width / 2;
-    y = s.height / 2 - 50;
-    super.resize(s);
+    x = s.width / 2;
+    y = (s.height - FlappyBirdGame.groundHeight) / 2;
+    radius = height * 3 / 5;
   }
 
   @override
@@ -60,7 +63,7 @@ class Bird extends AnimationComponent {
     if (timeCount < 19) {
       timeCount += 0.6;
     }
-    if (y < _game.height - height) {
+    if (y < _game.height - height / 2) {
       if (isDead) {
         angle = pi / 2;
       }
@@ -85,7 +88,6 @@ class Bird extends AnimationComponent {
   void die() {
     Flame.audio.play(Sound.die);
     isDead = true;
-//    x += width;
   }
 
   @override
@@ -99,19 +101,12 @@ class Bird extends AnimationComponent {
   @override
   void renderDebugMode(Canvas canvas) {
     // draw bird circle
-    final dx = width / 2;
-    final dy = height / 2;
-    final radius = height * 3/5;
-    canvas.drawCircle(Offset(dx, dy), radius, paint);
-    debugTextConfig.render(
-        canvas,
-        "(${dx.toStringAsFixed(2)}, ${dy.toStringAsFixed(2)}) r:${radius.toStringAsFixed(2)}",
-        Position(width - 50, height));
+    canvas.drawCircle(Offset(width / 2, height / 2), radius, paint);
     // draw center
-    canvas.drawPoints(PointMode.points, [Offset(dx, dy)], paint);
+    canvas.drawPoints(PointMode.points, [Offset(x, y)], paint);
     debugTextConfig.render(
         canvas,
-        "(${dx.toStringAsFixed(2)}, ${dy.toStringAsFixed(2)})",
-        Position(-dx, dy - 40));
+        "(${x.toStringAsFixed(2)}, ${y.toStringAsFixed(2)}) r:${radius.toStringAsFixed(2)}",
+        Position(width - 50, height));
   }
 }
