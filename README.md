@@ -1,18 +1,17 @@
 # flappy_bird
+A Flappy bird game implemented by `Flutter` with `Flame` game engine.
 
-Flappy bird
+## Screenshots
+![screeshot1](screenshots/screeshot1.png)
+![screeshot2](screenshots/screeshot2.png)
 
-## Getting Started
+## Run
+`flutter run`
 
-## License
+## Sound Reference
 
-jump sound
-https://freesound.org/people/timgormly/sounds/170164/
-die
-https://freesound.org/people/harrietniamh/sounds/415079/
-bgm
-https://freesound.org/people/DominikBraun/sounds/483502/
-crash
-https://freesound.org/people/Soundscape_Leuphana/sounds/207508/
-coin sound
-https://freesound.org/people/n_audioman/sounds/273570/
+- Jump https://freesound.org/people/timgormly/sounds/170164/
+- Die https://freesound.org/people/harrietniamh/sounds/415079/
+- BGM https://freesound.org/people/DominikBraun/sounds/483502/
+- Crash https://freesound.org/people/Soundscape_Leuphana/sounds/207508/
+- Coin https://freesound.org/people/n_audioman/sounds/273570/

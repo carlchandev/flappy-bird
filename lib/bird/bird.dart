@@ -24,8 +24,10 @@ class Bird extends AnimationComponent {
   double _timeCount = 0;
   double _displacement;
   bool _isDestroy = false;
-  double _initialJumpSpeed = 3;
+  double _initialJumpSpeed = 2;
   double _initialDropSpeed = 5;
+  double _maxDropSpeed = 17;
+  double _dropAcceleration = 0.55;
 
   Paint paint = Paint();
 
@@ -60,8 +62,8 @@ class Bird extends AnimationComponent {
     }
     _displacement = (_velocity * _timeCount) +
         (0.5 * _gravityAcceleration * pow(_timeCount, 2));
-    if (_timeCount < 17) {
-      _timeCount += 0.6;
+    if (_timeCount < _maxDropSpeed) {
+      _timeCount += _dropAcceleration;
     }
     if (y < _game.height - height / 2) {
       y += _displacement;
