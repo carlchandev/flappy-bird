@@ -10,7 +10,7 @@ void main() async {
   Util flameUtil = Util();
   await flameUtil.fullScreen();
   await flameUtil.setOrientation(DeviceOrientation.portraitUp);
-  FlappyBirdGame game = FlappyBirdGame();
+  GameController game = GameController();
   runApp(game.widget);
   Flame.bgm.initialize();
   Flame.audio.disableLog();

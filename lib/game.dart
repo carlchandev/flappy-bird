@@ -17,7 +17,7 @@ import 'button/play_button.dart';
 import 'button/retry_button.dart';
 import 'game_state.dart';
 
-class FlappyBirdGame extends BaseGame {
+class GameController extends BaseGame {
   static final double groundHeight = 130;
 
   GameState gameState = GameState.initializing;
@@ -49,7 +49,7 @@ class FlappyBirdGame extends BaseGame {
     return false;
   }
 
-  FlappyBirdGame() {
+  GameController() {
     Flame.audio.loadAll([
       Sound.bgm,
       Sound.jump,
@@ -73,13 +73,6 @@ class FlappyBirdGame extends BaseGame {
       height = s.height - groundHeight;
       centerX = s.width / 2;
       centerY = (s.height - groundHeight) / 2;
-
-      print('screenSize: ${s.width} x ${s.height}');
-      print('center: ($centerX, $centerY)');
-      print('game width, height: ($width, $height)');
-      print('skyTop: $skyTop');
-      print('groundHeight: $groundHeight');
-
       _gotoStartGame();
     }
   }

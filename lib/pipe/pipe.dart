@@ -11,7 +11,7 @@ class Pipe {
   static final double pipeHeight = 500;
 
   final int pipeId;
-  final FlappyBirdGame _game;
+  final GameController _game;
 
   PipeTop pipeTop;
   PipeBottom pipeBottom;

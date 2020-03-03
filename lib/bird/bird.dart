@@ -15,7 +15,7 @@ import '../game_state.dart';
 class Bird extends AnimationComponent {
   static final List<Sprite> sprites =
       [0, 1, 2, 1].map((i) => Sprite('bird$i.png')).toList();
-  final FlappyBirdGame _game;
+  final GameController _game;
   bool isDead = false;
   double radius;
 
@@ -41,7 +41,7 @@ class Bird extends AnimationComponent {
   @override
   void resize(Size s) {
     x = s.width / 2;
-    y = (s.height - FlappyBirdGame.groundHeight) / 2;
+    y = (s.height - GameController.groundHeight) / 2;
     radius = height * 3 / 5;
   }
 

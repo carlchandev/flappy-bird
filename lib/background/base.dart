@@ -10,9 +10,9 @@ class Base extends SpriteComponent {
   @override
   void resize(Size s) {
     x = 0;
-    y = s.height - FlappyBirdGame.groundHeight;
+    y = s.height - GameController.groundHeight;
     width = s.width;
-    height = FlappyBirdGame.groundHeight;
+    height = GameController.groundHeight;
   }
 
   @override
