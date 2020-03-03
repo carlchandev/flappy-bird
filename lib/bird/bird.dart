@@ -99,19 +99,19 @@ class Bird extends AnimationComponent {
   @override
   void renderDebugMode(Canvas canvas) {
     // draw bird circle
-    canvas.drawCircle(Offset(width / 2, height / 2), width / 2, paint);
-    final dx = x + width / 2;
-    final dy = y + height / 2;
-    final radius = width / 2;
+    final dx = width / 2;
+    final dy = height / 2;
+    final radius = height * 3/5;
+    canvas.drawCircle(Offset(dx, dy), radius, paint);
     debugTextConfig.render(
         canvas,
         "(${dx.toStringAsFixed(2)}, ${dy.toStringAsFixed(2)}) r:${radius.toStringAsFixed(2)}",
         Position(width - 50, height));
     // draw center
-    canvas.drawPoints(PointMode.points, [Offset(width / 2, height / 2)], paint);
+    canvas.drawPoints(PointMode.points, [Offset(dx, dy)], paint);
     debugTextConfig.render(
         canvas,
         "(${dx.toStringAsFixed(2)}, ${dy.toStringAsFixed(2)})",
-        Position(-width / 2, height / 2 - 40));
+        Position(-dx, dy - 40));
   }
 }

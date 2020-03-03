@@ -205,7 +205,7 @@ class FlappyBirdGame extends BaseGame {
 
   void _gotoStartGame() {
     _startGame.setVisible(true);
-    _gameOver.setVisible(false);
+    _gameOver.hide();
     _score.setVisible(false);
     _destroyRetryButton();
     _initializePlayButton();
@@ -228,7 +228,7 @@ class FlappyBirdGame extends BaseGame {
 
   void _gotoGameOver() {
     _hasCrashed = true;
-    _gameOver.setVisible(true);
+    _gameOver.show();
     _initializeRetryButton();
     Flame.audio.play(Sound.crash);
     _bird.die();
