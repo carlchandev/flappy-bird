@@ -5,6 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flappy_bird/background/background.dart';
 import 'package:flappy_bird/background/base.dart';
 import 'package:flappy_bird/bird/bird.dart';
+import 'package:flappy_bird/collision_detector.dart';
 import 'package:flappy_bird/config/sound.dart';
 import 'package:flappy_bird/pipe/pipe.dart';
 import 'package:flappy_bird/text/game_over.dart';
@@ -12,6 +13,8 @@ import 'package:flappy_bird/text/score.dart';
 import 'package:flappy_bird/text/start_game.dart';
 import 'package:flutter/material.dart';
 
+import 'button/play_button.dart';
+import 'button/retry_button.dart';
 import 'game_state.dart';
 
 class FlappyBirdGame extends BaseGame {
@@ -36,7 +39,9 @@ class FlappyBirdGame extends BaseGame {
   Bird _bird;
   Score _score = Score();
   StartGame _startGame = StartGame();
+  PlayButton _playButton;
   GameOver _gameOver = GameOver();
+  RetryButton _retryButton;
   bool _hasCrashed;
 
   @override
@@ -79,13 +84,24 @@ class FlappyBirdGame extends BaseGame {
   }
 
   void _initializeGame() {
-    print('fired _initializeGame');
-//    _initializeBgm();
-    _score.updateScore(0);
+    _initializeBgm();
     _initializeBird();
     _initializePipes();
-
+    _initializePlayButton();
+    _score.updateScore(0);
     _hasCrashed = false;
+  }
+
+  void _initializePlayButton() {
+    _playButton?.remove();
+    _playButton = PlayButton(() => _gotoPlayGame());
+    add(_playButton);
+  }
+
+  void _initializeRetryButton() {
+    _destroyRetryButton();
+    _retryButton = RetryButton(() => _gotoStartGame());
+    Future.delayed(Duration(seconds: 1), () => add(_retryButton));
   }
 
   void _initializeBird() {
@@ -112,10 +128,10 @@ class FlappyBirdGame extends BaseGame {
   void update(double t) {
     super.update(t);
     if (GameState.playing == gameState) {
-      _updatePipes(t);
       if (!_hasCrashed && _isCrashing()) {
         _gotoGameOver();
       } else {
+        _updatePipes(t);
         _updateScore();
       }
     }
@@ -130,28 +146,13 @@ class FlappyBirdGame extends BaseGame {
 
   bool _isCrashing() {
     if (_bird.isDead || _hasCrashed) return false;
-    if (_bird.y < 0 || _bird.y > (height - _bird.height)) {
+    if (_bird.y < 0 || _bird.y > (height - _bird.height / 2)) {
       return true;
     }
     final _comingPipes = _pipes.where((p) => !p.isPassed(_bird));
-    print('bird ${_bird.x}, ${_bird.y}');
-    // todo add crash box to debug
     for (Pipe p in _comingPipes) {
-      print('=================');
-      print('bird ${_bird.x}, ${_bird.y}');
-      print('upperLTWH ${p.upperLTWH["x"]}, ${p.upperLTWH["height"]}');
-      print('lowerLTWH ${p.lowerLTWH["x"]}, ${height - p.lowerLTWH["height"]}');
-      print('=================');
-      if (_bird.x + (_bird.height / 2) >=
-              (p.upperLTWH['x'] - (_bird.height / 2)) &&
-          _bird.x + (_bird.height / 2) <= p.upperLTWH['x'] + Pipe.pipeWidth) {
-        print('touch Pipe horizontally');
-        if ((_bird.y - (_bird.height / 2)) <= p.upperLTWH['height'] ||
-            (_bird.y + (_bird.height / 2)) >=
-                (height - p.lowerLTWH['height'] - (_bird.height / 2))) {
-          print('touch Pipe vertically');
-          return true;
-        }
+      if (CollisionDetector.hasBirdCollided(_bird, p)) {
+        return true;
       }
     }
     return false;
@@ -181,43 +182,36 @@ class FlappyBirdGame extends BaseGame {
           _bird.jump();
         }
         break;
-      case GameState.start:
-      case GameState.paused:
-        {
-          _gotoPlayGame();
-        }
-        break;
-      case GameState.finished:
-        {
-          _gotoStartGame();
-        }
-        break;
       default:
-        {
-          print('not handled.');
-        }
         break;
     }
   }
 
   void _gotoStartGame() {
-    _gameOver.setVisible(false);
+    _startGame.setVisible(true);
+    _gameOver.hide();
+    _score.setVisible(false);
+    _destroyRetryButton();
+    _initializePlayButton();
     _initializeGame();
     gameState = GameState.start;
+  }
+
+  void _destroyRetryButton() {
+    _retryButton?.remove();
   }
 
   void _gotoPlayGame() {
     gameState = GameState.playing;
     _startGame.setVisible(false);
-  }
-
-  void _pauseGame() {
-    gameState = GameState.paused;
+    _playButton.remove();
+    _score.setVisible(true);
   }
 
   void _gotoGameOver() {
     _hasCrashed = true;
-    _gameOver.setVisible(true);
+    _gameOver.show();
+    _initializeRetryButton();
     Flame.audio.play(Sound.crash);
     _bird.die();
     Flame.bgm.stop();

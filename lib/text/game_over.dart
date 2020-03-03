@@ -1,29 +1,43 @@
 import 'dart:ui';
 
 import 'package:flame/components/text_component.dart';
+import 'package:flappy_bird/config/game_text.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flappy_bird/config/game_text.dart';
-
 class GameOver extends TextComponent {
-  bool isVisible = false;
+  bool _isVisible = false;
+  double _toY;
 
-  GameOver() : super('Game Over\nTap to retry', config: GameText.light);
+  GameOver() : super('Game Over', config: GameText.large);
 
   @override
   void resize(Size s) {
-    x = s.width / 2 - 80;
-    y = s.height / 2 - 130;
+    x = s.width / 2 - width / 2;
+    y = -height;
+    _toY = s.height * 1 / 3;
   }
 
   @override
   void render(Canvas c) {
-    if (isVisible) {
+    if (_isVisible) {
       super.render(c);
     }
   }
 
-  void setVisible(bool isVisible) {
-    this.isVisible = isVisible;
+  @override
+  void update(double t) {
+    if (_isVisible && y <= _toY) {
+      y += 6;
+    }
   }
+
+  void show() => _isVisible = true;
+
+  void hide() {
+    _isVisible = false;
+    y = -height;
+  }
+
+  @override
+  int priority() => 30;
 }

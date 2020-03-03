@@ -19,4 +19,7 @@ class Background extends SpriteComponent {
   void render(Canvas c) {
     super.render(c);
   }
+
+  @override
+  int priority() => 20;
 }
