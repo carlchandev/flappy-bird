@@ -37,7 +37,7 @@ class FlappyBirdGame extends BaseGame {
   double _lastPipeInterval;
   Timer pipeFactoryTimer;
   Bird _bird;
-  Score _score = Score();
+  Score _score = Score(0);
   StartGame _startGame = StartGame();
   PlayButton _playButton;
   GameOver _gameOver = GameOver();
@@ -46,7 +46,7 @@ class FlappyBirdGame extends BaseGame {
 
   @override
   bool debugMode() {
-    return true;
+    return false;
   }
 
   FlappyBirdGame() {
@@ -55,6 +55,7 @@ class FlappyBirdGame extends BaseGame {
       Sound.jump,
       Sound.die,
       Sound.crash,
+      Sound.score,
     ]);
     add(_bg);
     add(_base);
@@ -88,7 +89,7 @@ class FlappyBirdGame extends BaseGame {
     _initializeBird();
     _initializePipes();
     _initializePlayButton();
-    _score.updateScore(0);
+    _score.reset();
     _hasCrashed = false;
   }
 
@@ -119,9 +120,10 @@ class FlappyBirdGame extends BaseGame {
   }
 
   void _initializeBgm() {
-    if (!Flame.bgm.isPlaying) {
-      Flame.bgm.play(Sound.bgm, volume: 0.5);
+    if (Flame.bgm.isPlaying) {
+      Flame.bgm.stop();
     }
+    Flame.bgm.play(Sound.bgm, volume: 0.5);
   }
 
   @override
@@ -212,7 +214,7 @@ class FlappyBirdGame extends BaseGame {
     _hasCrashed = true;
     _gameOver.show();
     _initializeRetryButton();
-    Flame.audio.play(Sound.crash);
+    Flame.audio.play(Sound.crash, volume: 0.5);
     _bird.die();
     Flame.bgm.stop();
     gameState = GameState.finished;

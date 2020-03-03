@@ -1,13 +1,15 @@
 import 'dart:ui';
 
 import 'package:flame/components/text_component.dart';
-
+import 'package:flame/flame.dart';
 import 'package:flappy_bird/config/game_text.dart';
+import 'package:flappy_bird/config/sound.dart';
 
 class Score extends TextComponent {
   bool isVisible = false;
+  int score;
 
-  Score() : super('0', config: GameText.large);
+  Score(this.score) : super(score.toString(), config: GameText.large);
 
   @override
   void resize(Size s) {
@@ -23,8 +25,15 @@ class Score extends TextComponent {
   }
 
   void updateScore(int newScore) {
-    text = newScore.toString();
-    // todo: play a sound
+    if (newScore > score) {
+      Flame.audio.play(Sound.score, volume: 0.5);
+    }
+    score = newScore;
+    text = score.toString();
+  }
+
+  void reset() {
+    score = 0;
   }
 
   void setVisible(bool isVisible) {

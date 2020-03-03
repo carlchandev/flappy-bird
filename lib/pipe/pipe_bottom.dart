@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flame/components/component.dart';
 import 'package:flame/sprite.dart';
-import 'package:flappy_bird/game.dart';
 import 'package:flappy_bird/pipe/pipe.dart';
 
 class PipeBottom extends SpriteComponent {

@@ -16,16 +16,16 @@ class Bird extends AnimationComponent {
   static final List<Sprite> sprites =
       [0, 1, 2, 1].map((i) => Sprite('bird$i.png')).toList();
   final FlappyBirdGame _game;
-
-  double radius;
-  double velocity = -2.3;
-  double gravityAcceleration = 0.35;
-  double timeCount = 0;
-  double displacement;
   bool isDead = false;
-  bool isDestroy = false;
-  List<double> flyAngles = [-pi / 10, -pi / 8, -pi / 6];
-  int flyAnimationIndex = 0;
+  double radius;
+
+  double _velocity = -2.3;
+  double _gravityAcceleration = 0.34;
+  double _timeCount = 0;
+  double _displacement;
+  bool _isDestroy = false;
+  double _initialJumpSpeed = 3;
+  double _initialDropSpeed = 5;
 
   Paint paint = Paint();
 
@@ -55,45 +55,45 @@ class Bird extends AnimationComponent {
 
   void _move() {
     if (isDead) {
-      return; // debug
-      timeCount = timeCount < 10 ? 10 : timeCount;
+      _timeCount =
+          _timeCount < _initialDropSpeed ? _initialDropSpeed : _timeCount;
     }
-    displacement = (velocity * timeCount) +
-        (0.5 * gravityAcceleration * pow(timeCount, 2));
-    if (timeCount < 19) {
-      timeCount += 0.6;
+    _displacement = (_velocity * _timeCount) +
+        (0.5 * _gravityAcceleration * pow(_timeCount, 2));
+    if (_timeCount < 17) {
+      _timeCount += 0.6;
     }
     if (y < _game.height - height / 2) {
-      if (isDead) {
-        angle = pi / 2;
-      }
-      y += displacement;
+      y += _displacement;
     }
-//    if (displacement < 0) {
-//      angle = flyAngles[flyAnimationIndex++];
-//      if (flyAnimationIndex > flyAngles.length) {
-//        flyAnimationIndex = 0;
-//      }
-//    }
+    if (_displacement < 0) {
+      angle = -pi / 8;
+    } else if (_displacement == 0) {
+      angle = 0;
+    } else {
+      angle = pi / 8;
+    }
+    if (isDead) {
+      angle = pi / 2;
+    }
   }
 
   void jump() {
     if (!isDead) {
       Flame.audio.play(Sound.jump, volume: 0.5);
-      timeCount = 0;
-      flyAnimationIndex = 0;
+      _timeCount = _initialJumpSpeed;
     }
   }
 
   void die() {
-    Flame.audio.play(Sound.die);
+    Flame.audio.play(Sound.die, volume: 0.5);
     isDead = true;
   }
 
   @override
-  bool destroy() => isDestroy;
+  bool destroy() => _isDestroy;
 
-  void remove() => isDestroy = true;
+  void remove() => _isDestroy = true;
 
   @override
   int priority() => 28;

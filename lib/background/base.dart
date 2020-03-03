@@ -16,5 +16,5 @@ class Base extends SpriteComponent {
   }
 
   @override
-  int priority() => 20;
+  int priority() => 30;
 }

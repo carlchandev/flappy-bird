@@ -5,6 +5,7 @@ Flappy bird
 ## Getting Started
 
 ## License
+
 jump sound
 https://freesound.org/people/timgormly/sounds/170164/
 die
@@ -13,3 +14,5 @@ bgm
 https://freesound.org/people/DominikBraun/sounds/483502/
 crash
 https://freesound.org/people/Soundscape_Leuphana/sounds/207508/
+coin sound
+https://freesound.org/people/n_audioman/sounds/273570/

@@ -19,10 +19,10 @@ class Pipe {
   double _gapHeight;
   double _gapTopY;
 
-  final int gapMinHeight = 180;
-  final int gapMaxHeight = 240;
-  final int gapMinTopY = 150;
-  final int gapMaxTopY = 350;
+  final int gapMinHeight = 170;
+  final int gapMaxHeight = 210;
+  final int gapMinTopY = 100;
+  final int gapMaxTopY = 400;
   double x;
   bool isOutOfSight = false;
 
