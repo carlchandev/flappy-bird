@@ -31,7 +31,6 @@ class GameController extends BaseGame {
   double height;
   double centerX;
   double centerY;
-  double skyTop = 0;
 
   Background _bg = Background();
   Base _base = Base();

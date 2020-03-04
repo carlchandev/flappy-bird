@@ -7,8 +7,7 @@ A Flappy bird game implemented by `Flutter` with `Flame` game engine.
 ## Credits
 
 ### Sounds
-- BGM https://freesound.org/people/DominikBraun/sounds/483502/
-My Fat Cat https://soundimage.org/funny-2/
+- BGM, My Fat Cat https://soundimage.org/funny-2/
 https://soundimage.org/attribution-info/
 - Jump https://freesound.org/people/timgormly/sounds/170164/
 - Die https://freesound.org/people/cabled_mess/sounds/371451/
