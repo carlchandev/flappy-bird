@@ -59,7 +59,7 @@ class GameController extends BaseGame {
   }
 
   GameController() {
-    initUserBox().then((b) => userBox = b);
+    _initializeUserBox().then((b) => userBox = b);
     Flame.audio.loadAll([
       Sound.bgm,
       Sound.jump,
@@ -75,8 +75,8 @@ class GameController extends BaseGame {
     _getLastTopScore().then((s) => _topScore = s);
   }
 
-  Future<Box> initUserBox() async {
-    await Hive.openBox(Store.userBox);
+  Future<Box> _initializeUserBox() async {
+    return Hive.openBox(Store.userBox);
   }
 
   Future<int> _getLastTopScore() async => Hive.openBox(Store.userBox)
@@ -229,6 +229,7 @@ class GameController extends BaseGame {
   }
 
   void _gotoGameOver() {
+    _score.setVisible(false);
     Flame.audio.play(Sound.crash, volume: 0.5);
     _bird.die();
     Flame.bgm.stop();
