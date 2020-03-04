@@ -1,4 +1,4 @@
-# flappy_bird
+# Flappy Bird
 A Flappy bird game implemented by `Flutter` with `Flame` game engine.
 
 ## Run
