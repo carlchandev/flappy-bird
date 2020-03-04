@@ -134,7 +134,7 @@ class GameController extends BaseGame {
     if (Flame.bgm.isPlaying) {
       Flame.bgm.stop();
     }
-    Flame.bgm.play(Sound.bgm, volume: 0.5);
+    Flame.bgm.play(Sound.bgm, volume: 0.2);
   }
 
   @override
@@ -243,9 +243,9 @@ class GameController extends BaseGame {
   void _updateTopScore() {
     _getLastTopScore().then((lastTopScore) {
       if (_score.score > lastTopScore) {
-        _topScore = lastTopScore;
+        _topScore = _score.score;
         Hive.openBox(Store.userBox)
-            .then((b) => b.put(Store.topScore, _score.score));
+            .then((b) => b.put(Store.topScore, _topScore));
       }
       _showScoreBoard();
     });
