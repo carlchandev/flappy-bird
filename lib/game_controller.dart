@@ -225,6 +225,7 @@ class GameController extends BaseGame {
     _startGame.setVisible(false);
     _playButton.remove();
     _score.setVisible(true);
+    _bird.jump();
   }
 
   void _gotoGameOver() {

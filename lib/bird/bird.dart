@@ -8,7 +8,7 @@ import 'package:flame/flame.dart';
 import 'package:flame/position.dart';
 import 'package:flame/sprite.dart';
 import 'package:flappy_bird/config/sound.dart';
-import 'package:flappy_bird/game.dart';
+import 'package:flappy_bird/game_controller.dart';
 
 import '../game_state.dart';
 
@@ -21,12 +21,12 @@ class Bird extends AnimationComponent {
 
   double _velocity = -2.3;
   double _gravityAcceleration = 0.34;
-  double _timeCount = 0;
   double _displacement;
   bool _isDestroy = false;
+  double _timeCount = 0;
   double _initialJumpSpeed = 3.5;
   double _initialDropSpeed = 5;
-  double _maxDropSpeed = 17;
+  double _maxDropSpeed = 17.5;
   double _dropAcceleration = 0.55;
 
   Paint paint = Paint();
@@ -60,20 +60,38 @@ class Bird extends AnimationComponent {
       _timeCount =
           _timeCount < _initialDropSpeed ? _initialDropSpeed : _timeCount;
     }
-    _displacement = (_velocity * _timeCount) +
-        (0.5 * _gravityAcceleration * pow(_timeCount, 2));
+    _calculateDisplacement();
+    _limitDropAcceleration();
+    _applyDisplacement();
+    _spin();
+  }
+
+  void _applyDisplacement() {
+    if (y < _game.height - height / 2) {
+      y += (_displacement * 0.9);
+    }
+  }
+
+  void _limitDropAcceleration() {
     if (_timeCount < _maxDropSpeed) {
       _timeCount += _dropAcceleration;
     }
-    if (y < _game.height - height / 2) {
-      y += _displacement;
-    }
+  }
+
+  void _calculateDisplacement() {
+    _displacement = (_velocity * _timeCount) +
+        (0.5 * _gravityAcceleration * pow(_timeCount, 2));
+  }
+
+  void _spin() {
     if (_displacement < 0) {
       angle = -pi / 8;
     } else if (_displacement == 0) {
       angle = 0;
-    } else {
+    } else if (_displacement > 0 && _displacement <= 10.91) {
       angle = pi / 8;
+    } else {
+      angle = pi / 3;
     }
     if (isDead) {
       angle = pi / 2;

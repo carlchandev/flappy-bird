@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flappy_bird/bird/bird.dart';
-import 'package:flappy_bird/game.dart';
+import 'package:flappy_bird/game_controller.dart';
 import 'package:flappy_bird/pipe/pipe_bottom.dart';
 import 'package:flappy_bird/pipe/pipe_top.dart';
 
@@ -19,10 +19,10 @@ class Pipe {
   double _gapHeight;
   double _gapTopY;
 
-  final int gapMinHeight = 170;
-  final int gapMaxHeight = 210;
-  final int gapMinTopY = 100;
-  final int gapMaxTopY = 400;
+  final int gapMinHeight = 150;
+  final int gapMaxHeight = 190;
+  final int gapMinTopY = 90;
+  final int gapMaxTopY = 450;
   double x;
   bool isOutOfSight = false;
 
