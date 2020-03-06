@@ -68,7 +68,7 @@ class Bird extends AnimationComponent {
 
   void _applyDisplacement() {
     if (y < _game.height - height / 2) {
-      y += (_displacement * 0.9);
+      y += (_displacement * 0.75);
     }
   }
 
