@@ -19,8 +19,8 @@ class Pipe {
   double _gapHeight;
   double _gapTopY;
 
-  final int gapMinHeight = 160;
-  final int gapMaxHeight = 180;
+  final int gapMinHeight = 165;
+  final int gapMaxHeight = 165;
   final int gapMinTopY = 90;
   final int gapMaxTopY = 450;
   double x;
@@ -45,6 +45,7 @@ class Pipe {
       };
 
   double _randomIntInRange(int min, int max) {
+    if (min == max) return min.toDouble();
     return (min + Random().nextInt(max - min)).toDouble();
   }
 

@@ -68,7 +68,7 @@ class Bird extends AnimationComponent {
 
   void _applyDisplacement() {
     if (y < _game.height - height / 2) {
-      y += (_displacement * 0.75);
+      y += (_displacement * 0.8);
     }
   }
 
@@ -100,7 +100,7 @@ class Bird extends AnimationComponent {
 
   void jump() {
     if (!isDead) {
-      Flame.audio.play(Sound.jump, volume: 0.5);
+      Flame.audio.play(Sound.jump, volume: 0.4);
       _timeCount = _initialJumpSpeed;
     }
   }

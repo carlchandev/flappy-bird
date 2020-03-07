@@ -133,7 +133,7 @@ class GameController extends BaseGame {
     if (Flame.bgm.isPlaying) {
       Flame.bgm.stop();
     }
-    Flame.bgm.play(Sound.bgm, volume: 0.2);
+    Flame.bgm.play(Sound.bgm, volume: 0.4);
   }
 
   @override
